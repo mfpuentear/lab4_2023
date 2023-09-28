@@ -26,11 +26,11 @@ app.get("/", (req, res) => {
 // POST /tareas: Agregar nueva tarea
 app.post("/tareas", async (req, res) => {
   const tarea = req.body.tarea;
-  await db.execute(
+  const [rows] = await db.execute(
     "INSERT INTO tareas (descripcion, lista) VALUES (:descripcion, :lista)",
     { descripcion: tarea.descripcion, lista: tarea.lista }
   );
-  res.status(201).send(tarea);
+  res.status(201).send({ ...tarea, id: rows.insertId });
 });
 
 // GET /tareas: Leer todas las tareas
