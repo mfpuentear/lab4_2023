@@ -1,13 +1,14 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import mysql from "mysql2/promise";
 
 // Conectar a base de datos
 const db = await mysql.createConnection({
-  host: "localhost",
-  user: "db_user",
-  password: "db_user_pass",
-  database: "db-lab4",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   namedPlaceholders: true,
 });
 console.log("Conectado a base de datos");
