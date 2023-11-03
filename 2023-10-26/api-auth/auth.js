@@ -51,7 +51,14 @@ export const authRouter = express
 
       // Obtengo cuenta de usuario
       const [rows, fields] = await db.execute(
-        "SELECT usuario, password FROM cuentas WHERE usuario = :usuario",
+        `SELECT
+           c.usuario,
+           c.password,
+           c.rol
+           p.id as personaId
+         FROM cuentas c
+         JOIN personas p ON c.persona_id = p.id
+         WHERE usuario = :usuario`,
         { usuario }
       );
       if (rows.length === 0) {
@@ -59,8 +66,10 @@ export const authRouter = express
         return;
       }
 
+      const user = rows[0];
+
       // Verificar contraseña
-      const passwordCompared = await bcrypt.compare(password, rows[0].password);
+      const passwordCompared = await bcrypt.compare(password, user.password);
       if (!passwordCompared) {
         res.status(400).send("Usuario o contraseña inválida");
         return;
@@ -71,7 +80,16 @@ export const authRouter = express
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
-      res.send({ usuario, token });
+
+      // Sesion en WEB
+      const sesion = {
+        usuario: user.usuario,
+        personaId: user.personaId,
+        rol: user.rol,
+        token,
+      };
+
+      res.send(sesion);
     }
   )
 

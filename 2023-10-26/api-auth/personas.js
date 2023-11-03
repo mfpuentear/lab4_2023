@@ -1,4 +1,5 @@
 import express from "express";
+import passport from "passport";
 import { db } from "./db.js";
 import { body, param, query, validationResult } from "express-validator";
 
@@ -53,6 +54,7 @@ export const personasRouter = express
 
   .get(
     "/:id/tareas",
+    passport.authenticate("jwt", { session: false }),
     param("id").isInt({ min: 1 }),
     query("lista").isInt({ min: 0, max: 1 }).optional(),
     async (req, res) => {
