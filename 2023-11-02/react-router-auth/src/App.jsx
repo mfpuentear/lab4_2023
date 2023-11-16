@@ -15,7 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="/acerca-de" element={<AboutPage />} />
+          <Route path="/acerca-de/:id" element={<AboutPage />} />
           <Route
             path="/perfil"
             element={
